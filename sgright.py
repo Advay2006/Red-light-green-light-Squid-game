@@ -63,8 +63,7 @@ def func2():
 	while (cap.isOpened()):
 		ret, frame = cap.read()
 		if frame is not None:
-			#crop_image2 = frame[x:w, h:640]
-			crop_image2 = frame
+			crop_image2 = frame[x:w, h:640]
 			frame2 = crop_image2
 
 			frm = frame2
@@ -91,7 +90,7 @@ def func2():
 					currWindow = im1
 					startT = time.time()
 					endT = startT
-					dur = np.random.randint(1, 5)
+					dur = np.random.randint(3, 6)
 					playsound('greenLight.mp3')
 					isInit = True
 
@@ -101,6 +100,7 @@ def func2():
 						nPos = abs(int(res.pose_landmarks.landmark[0].z*200))
 						###print(nPos)
 						if abs(nPos) > cPos:
+							print(cPos)
 							cPos += nPos
 							###print('cpos: ', cPos)
 
@@ -113,7 +113,7 @@ def func2():
 
 				else:
 
-					if cPos >= 100:
+					if cPos >= 275:
 						print("WINNER")
 						winner = 1
 						return True
@@ -130,7 +130,8 @@ def func2():
 						if (cEnd - cStart) <= 3 and res.pose_landmarks is not None:
 							tempSum = calc_sum(res.pose_landmarks.landmark)
 							cEnd = time.time()
-							if abs(tempSum - userSum) > 150:
+							#275
+							if abs(tempSum - userSum) > 500:
 								print("DEAD ", abs(tempSum - userSum))
 								isAlive = 0
 

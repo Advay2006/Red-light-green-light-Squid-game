@@ -4,10 +4,11 @@ import subprocess
 from sgleft import iswinl
 from sgright import iswinr, func2
 
-#t1 = Thread(target=subprocess.run, args=(["python", "sgleft.py"],))
+t1 = Thread(target=subprocess.run, args=(["python", "sgleft.py"],))
 t2 = Thread(target=subprocess.run, args=(["python", "sgright.py"],))
 
-#t1.start()
+
+t1.start()
 t2.start()
 while True:
     print(iswinr())

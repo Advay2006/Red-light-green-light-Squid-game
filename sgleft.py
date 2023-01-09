@@ -4,7 +4,7 @@ import numpy as np
 import time
 from multiprocessing import Process
 import sys
-#from playsound import playsound
+from playsound import playsound
 
 
 cap = cv2.VideoCapture(0)
@@ -118,7 +118,7 @@ def func1():
 						return True
 
 					else:
-						if not (isCinit):
+						if not (isCinit) and res.pose_landmarks is not None:
 							isCinit = True
 							cStart = time.time()
 							cEnd = cStart
@@ -126,7 +126,7 @@ def func1():
 							# playsound('redLight.mp3')
 							userSum = calc_sum(res.pose_landmarks.landmark)
 
-						if (cEnd - cStart) <= 3:
+						if (cEnd - cStart) <= 3 and res.pose_landmarks is not None:
 							tempSum = calc_sum(res.pose_landmarks.landmark)
 							cEnd = time.time()
 							if abs(tempSum - userSum) > 150:

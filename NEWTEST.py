@@ -10,7 +10,7 @@ import sys
 from playsound import playsound
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 #cap2 = cv2.VideoCapture(1)
 
 print(cap.get(cv2.CAP_PROP_FRAME_WIDTH))

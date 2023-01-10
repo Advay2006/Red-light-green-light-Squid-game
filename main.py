@@ -6,8 +6,8 @@ from playsound import playsound
 
 y = 0
 x = 0
-h = 600
-w = 700
+h = 320
+w = 480
 cposl = 0
 cposr = 0
 startT = 0
@@ -58,9 +58,9 @@ im2 = cv2.imread('im2.png')
 
 while cap.isOpened():
     ret, frame = cap.read()
-    crop_left = frame[x:w, y:h]
-    crop_right = frame[x:w, h:1400]
-    crop_left = crop_right
+    crop_right = frame[x:w, y:h]
+    crop_left = frame[x:w, h:640]
+    #crop_left = crop_right
 
     left, resl = detect(crop_left, pose, drawing)
     right, resr = detect(crop_right, pose1, drawing1)

@@ -166,3 +166,11 @@ while cap.isOpened():
         cv2.destroyAllWindows()
         cap.release()
         break
+cv2.destroyAllWindows()
+cap.release()
+cv2.imshow('death', left)
+cv2.imshow('death', right)
+if cv2.waitKey(1) == 27:
+    cv2.destroyAllWindows()
+    cap.release()
+time.sleep(20)

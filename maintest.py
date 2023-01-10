@@ -17,6 +17,7 @@ winner = 0
 lsum = 0
 rsum = 0
 dur = 0
+frameskip = 0
 endx, endy = 30, 425
 startxl, startxr = 30, 30
 startx, starty = 30, 400
@@ -27,8 +28,8 @@ isInit = False
 isCinit = False
 inFramecheck = False
 
-greenlight = cv2.imread('greenppt.png')
-redlight = cv2.imread('redppt.png')
+greenlight = cv2.imread('greenpptR.png')
+redlight = cv2.imread('redpptR.png')
 
 
 def detect(frm, pose, drawing):
@@ -62,11 +63,13 @@ mp_pose1 = mp.solutions.pose
 pose1 = mp_pose1.Pose()
 drawing1 = mp.solutions.drawing_utils
 
-im1 = cv2.imread('im1.png')
-im2 = cv2.imread('im2.png')
+#im1 = cv2.imread('im1.png')
+#im2 = cv2.imread('im2.png')
 
 while cap.isOpened():
     ret, frame = cap.read()
+    if frame is None:
+        continue
     crop_right = frame[x:w, y:h]
     crop_left = frame[x:w, h:640]
     #crop_left = crop_right
@@ -99,22 +102,20 @@ while cap.isOpened():
             dur = random.randint(3, 6)
             startT = time.time()
             endT = startT
+            #left = np.concatenate((cv2.resize(left, (800, 400)), greenlight), axis=0)
             playsound('greenLight.mp3')
             isInit = True
         if resl.pose_landmarks and resr.pose_landmarks is not None:
             if (endT - startT) <= dur:
 
                 nposl = abs(int(resl.pose_landmarks.landmark[28].y * 200))
-                print('original:', nposl)
                 nposr = abs(int(resr.pose_landmarks.landmark[28].y * 200))
                 if initial_zl is None:
                     initial_zr = nposr
                     initial_zl = nposl
-                    print('initial:', initial_zl)
                     continue
                 else:
                     nposl = abs(nposl - initial_zl)
-                    print('subtracted:', nposl)
                     nposr = abs(nposr - initial_zr)
                 if nposl > cposl:
                     cposl = nposl
@@ -138,14 +139,23 @@ while cap.isOpened():
                 endT = time.time()
             else:
                 if not isCinit and resl.pose_landmarks is not None and resr.pose_landmarks is not None:
+
+                    if frameskip == 0:
+                        playsound('redLight.mp3')
+                        cStart = time.time()
+                        cEnd = cStart
+                    if frameskip != 10:
+                        frameskip += 1
+                        print('skipping')
+                        continue
                     isCinit = True
-                    cStart = time.time()
-                    cEnd = cStart
-                    playsound('redLight.mp3')
+                    frameskip = 0
+                    print('calculating')
                     lsum = calc_sum(resl.pose_landmarks.landmark)
                     rsum = calc_sum(resr.pose_landmarks.landmark)
 
                 if (cEnd - cStart) <= 3:
+                    print('Detect started!')
                     lsumt = calc_sum(resl.pose_landmarks.landmark)
                     rsumt = calc_sum(resr.pose_landmarks.landmark)
                     cEnd = time.time()
@@ -172,13 +182,14 @@ while cap.isOpened():
         cv2.destroyAllWindows()
         cap.release()
         break
+
 cv2.destroyAllWindows()
 cap.release()
 if winner == 1:
     cv2.imshow('YOU WON!', left)
+
 elif winner == 2:
     cv2.imshow('YOU WON!', right)
-print(resl.pose_landmarks.landmark[28])
 if cv2.waitKey(1) == 27:
     cv2.destroyAllWindows()
     cap.release()
